@@ -17,9 +17,9 @@ WiFiClient client;
 unsigned long myChannelNumber = SECRET_CH_ID;
 
 // Initialize our values
-int number1 = 0;
-int number2 = random(0, 100);
-int number3 = random(0, 100);
+int number1 = random(0, 50);
+int number2 = random(50, 100);
+int number3 = random(100, 150);
 String myStatus = "";
 
 void setup()
@@ -52,9 +52,12 @@ void loop()
     }
 
     // set the fields with the values
-    ThingSpeak.setField(4, number1++);
-    ThingSpeak.setField(5, number2++);
-    ThingSpeak.setField(6, number3++);
+    // ThingSpeak.setField(4, number1++);
+    ThingSpeak.setField(4, random(0, 50));
+    // ThingSpeak.setField(5, number2++);
+    ThingSpeak.setField(5, random(50, 100));
+    // ThingSpeak.setField(6, number3++);
+    ThingSpeak.setField(6, random(100, 150));
     ThingSpeak.setStatus(myStatus);
 
     // write to the ThingSpeak channel

@@ -1,26 +1,14 @@
-// / Import required libraries
+// * data generator
 #include <ESP8266WiFi.h>
 #include "ESPAsyncWebServer.h"
 
-// #include <Wire.h>
-// #include <Adafruit_Sensor.h>
-// #include <Adafruit_BME280.h>
+
 
 // Set your access point network credentials
 const char *ssid = "ESP8266-Access-Point";
 const char *password = "123456789";
 
-/*#include <SPI.h>
-#define BME_SCK 18
-#define BME_MISO 19
-#define BME_MOSI 23
-#define BME_CS 5*/
 
-// Adafruit_BME280 bme; // I2C
-// Adafruit_BME280 bme(BME_CS); // hardware SPI
-// Adafruit_BME280 bme(BME_CS, BME_MOSI, BME_MISO, BME_SCK); // software SPI
-
-// Create AsyncWebServer object on port 80
 AsyncWebServer server(80);
 
 String writeTemp()
@@ -64,19 +52,6 @@ void setup()
     server.on("/pressure", HTTP_GET, [](AsyncWebServerRequest *request)
               { request->send_P(200, "text/plain", writePres().c_str()); });
 
-    // bool status;
-
-    // // default settings
-    // // (you can also pass in a Wire library object like &Wire2)
-    // status = bme.begin(0x76);
-    // if (!status)
-    // {
-    //     Serial.println("Could not find a valid BME280 sensor, check wiring!");
-    //     while (1)
-    //         ;
-    // }
-
-    // Start server
     server.begin();
 }
 

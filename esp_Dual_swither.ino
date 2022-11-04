@@ -49,7 +49,33 @@ void setup()
     Serial.begin(115200);
     Serial.println();
 }
-
+void Connect(int flag)
+{
+    WiFi.disconnect();
+    delay(100);
+    if (flag == 1)
+    {
+        WiFi.begin(ssid, password);
+        Serial.println("Connecting to AP");
+        while (WiFi.status() != WL_CONNECTED)
+        {
+            delay(500);
+            Serial.print(".");
+        }
+        Serial.println("Connected to AP");
+    }
+    else if (flag == 2)
+    {
+        WiFi.begin(ssid_thingSpeak, pass_thingSpeak);
+        Serial.println("Connecting to ThingSpeak");
+        while (WiFi.status() != WL_CONNECTED)
+        {
+            delay(500);
+            Serial.print(".");
+        }
+        Serial.println("Connected to ThingSpeak");
+    }
+}
 void loop()
 {
     if (!newDataFetched)
@@ -68,20 +94,7 @@ void loop()
 }
 void getData()
 {
-    Serial.print("Device is connected to : ");
-    WiFi.SSID();
-    Serial.println();
-    Serial.print("Connecting to : ");
-    Serial.println(ssid);
-    WiFi.begin(ssid, password);
-    while (WiFi.status() != WL_CONNECTED)
-    {
-        delay(50);
-        Serial.print(".");
-    }
-    Serial.println("");
-    Serial.println("Connected to WiFi: " + String(ssid) + "for data fetching");
-
+    Connect(1);
     // * data fetching from other esp8266
     unsigned long currentMillis = millis();
 
@@ -96,7 +109,7 @@ void getData()
         // save the last HTTP GET Request
         previousMillis = currentMillis;
         newDataFetched = true;
-        WiFi.disconnect();
+        // WiFi.disconnect();
     }
     else
     {
@@ -105,35 +118,13 @@ void getData()
 }
 void sendDataToThingspeak()
 {
-    Serial.print("Device is connected to : ");
-    WiFi.SSID();
-    Serial.println();
-    if (WiFi.status() != WL_CONNECTED)
-    {
-        Serial.print("Attempting to connect to SSID: ");
-        Serial.println(SECRET_SSID);
-        while (WiFi.status() != WL_CONNECTED)
-        {
-            WiFi.begin(SECRET_SSID, SECRET_PASS); // Connect to WPA/WPA2 network. Change this line if using open or WEP network
-            Serial.print(".");
-            delay(500);
-        }
-        Serial.println("\nConnected.");
-    }
+    Connect(2);
 
     // set the fields with the values
-    ThingSpeak.setField(4, temperature);
-    ThingSpeak.setField(5, humidity);
-    ThingSpeak.setField(6, pressure);
-    ThingSpeak.setStatus(myStatus);
-
-    // write to the ThingSpeak channel
-    int x = ThingSpeak.writeFields(myChannelNumber, myWriteAPIKey);
+    int x = ThingSpeak.writeField(myChannelNumber, 4, temperature, myWriteAPIKey);
     if (x == 200)
     {
         Serial.println("Channel update successful.");
-        newDataFetched = false;
-        WiFi.disconnect();
     }
     else
     {
